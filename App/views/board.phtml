@@ -1,0 +1,395 @@
+<input type="hidden" id="user_data" value=<?php echo $_SESSION['user_id']; ?>>
+<body>
+    <main class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-md-10 col-xl-8 board">
+                <div class="card">
+                    <div class="card-header msg_head">
+                        <div class="d-flex bd-highlight">
+                            <div class="user_info">
+                                <div>
+                                    <span>Приветствую <span id="user_name"><?php echo $pageData['name']; ?></span></span>
+                                </div>
+                                <span>Панель управления Ad-tech</span>
+                                <p>Вы вошли как <span id="user_role"><?php echo $pageData['role']; ?></span></p>
+                            </div>
+                        </div>
+                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+                        <div class="action_menu">
+                            <ul>
+                                <?php if ($pageData['role'] == 'Администратор') { ?>
+
+                                <li id="create_user"><i class="fas fa-user-circle"></i>Создание пользователей</li>
+                                <li id="ban_user"><i class="fas fa-yin-yang"></i>Блокировка пользователей</li>
+                                <li id="stats_sys"><i class="fas fa-dollar-sign"></i>Статистика системы</li>
+
+                                <?php } else if ($pageData['role'] == 'Вебмастер') { ?>
+
+                                <li id="offers_web"><i class="fas fa-star-half-alt"></i>Управление заказами</li>
+                                <li id="stats_web"><i class="fas fa-dollar-sign"></i>Статистика разработчика</li>
+
+                                <?php } else if ($pageData['role'] == 'Рекламодатель') { ?>
+
+                                <li id="offers_add"><i class="far fa-star"></i>Создание заказа</li>
+                                <li id="offers_adv"><i class="fas fa-star-half-alt"></i>Управление заказами</li>
+                                <li id="stats_adv"><i class="fas fa-dollar-sign"></i>Статистика рекламы</li> 
+
+                                <?php } ?>
+
+                                <li id="exit"><i class="fas fa-times"></i>Выйти</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body msg_card_body">
+                        <div class="d-flex justify-content-start mb-4 row">
+                            <div class="board_text">Данная панель управления реализована через модальные окна</div>
+                            <div class="board_text">для управления функционалом используйте модальное меню</div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div class="popups__inner">
+        
+            <?php if ($pageData['role'] == 'Администратор') { ?>
+            <!-- Создание Пользователей -->
+			<div class="popup create_user__popup">
+                <div class="container_login">
+                    <div class="d-flex justify-content-center h-100" >
+                        <div class="card_login">
+                            <a class="close_popup"><span class="text">&#10006</span></a>
+                            <div class="card-header justify-content-center">
+                                <h5>Создание Пользователей</h5>
+				            </div>
+                            <div class="error d-flex justify-content-center" id="msg_info"></div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                        </div>
+                                        <input type="email" class="form-control" placeholder="your@email" id="userEmail" required>							
+                                    </div>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" placeholder="password" id="userPassword" required>
+                                    </div>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" placeholder="confirm password" id="userPassword2" required>
+                                    </div>
+                                    <div class="row align-items-center remember">
+                                        <label>
+                                            <input type="radio" name="role" value="webmaster" checked> <span class="text"> как "Вэбмастер"</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="role" value="advertiser"> <span class="text"> как "Рекламодатель"</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Зарегистрировать" class="btn float-right regist_btn" id="createUser">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<!-- Блокировка пользователей -->
+            <div class="popup ban_user__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-10 col-xl-6 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Блокировка пользователей</h5>
+                                </div>                                
+                                <div class="error d-flex justify-content-center" id="ban_info"></div>
+                                <div class="row justify-content-center mb-3">
+                                    <div class="col-12 text-center">
+                                        <div class="board_text"><h6>Активные пользователи</h6></div>
+                                    </div>
+                                    <div class="row">
+                                        <select id="noban_user_list" class="form-control select">
+                                        <?php foreach ($pageData['activeUser'] as $item) {
+                                            echo '<option data-user="' . $item['id'] . '"> ' . $item['email'] . ' | ' . $item['role'] . '</option>';
+                                        } ?>
+
+                                        </select>
+                                        <input id="button_ban" type="submit" value="Забанить" class="ban_btn">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center mb-3">
+                                    <div class="col-12 text-center">
+                                        <div class="board_text"><h6>Не активные пользователи</h6></div>
+                                    </div>
+                                    <div class="row">
+                                        <select id="ban_user_list" class="form-control select">
+                                        <?php foreach ($pageData['inactiveUser'] as $item) {
+                                            echo '<option data-user="' . $item['id'] . '"> ' . $item['email'] . ' | ' . $item['role'] . '</option>';
+                                        } ?>
+
+                                        </select>
+                                        <input id="button_unban" type="submit" value="Разбанить" class="ban_btn">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <!-- Статистика системы -->
+            <div class="popup stats_sys__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-6 col-xl-4 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Статистика системы</h5>                                    
+                                </div>
+                                <div class="error d-flex justify-content-center" id="stats_info"></div>
+                                <div class="card-header justify-content-center">
+                                    <h6>Выбирете период</h6>
+                                </div>
+                                <div class="row calendar">
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_start" type="date">            
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_end" type="date">
+                                    </div>                
+                                </div>                                
+                                <div class="justify-content-start mb-4">
+                                    <div class="board_text">Количество выданных ссылок: <span class="digit" id="count_link">Х</span></div>
+                                    <div class="board_text">Количество переходов: <span class="digit" id="count_transitions">Х</span></div>
+                                    <div class="board_text">Количество отказов: <span class="digit" id="count_fails">Х</span></div>
+                                    <div class="board_text">Доход составляет (в рублях): <span class="digit" id="income_time">Х</span></div> 
+                                    <div class="board_text">Общий доход составляет (в рублях): <span class="digit" id="total_income">Х</span></div>                   
+                                </div>
+                                <button id="statsSys" type="button" class="btn float-right regist_btn">Получить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+            
+            <?php } else if ($pageData['role'] == 'Вебмастер') { ?>
+            <!-- Управление заказами -->
+            <div class="popup offers_web__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-10 col-xl-6 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Управление заказами</h5>
+                                </div>
+                                <div class="error d-flex justify-content-center" id="offer_info"></div>
+                                <div class="row mb-3">
+                                    <div class="col-12 text-center">
+                                        <div class="board_text"><h6>Поиск заказов</h6></div>
+                                    </div>
+                                    <div class="row">
+                                        <select id="active_subs" class="form-control select-offer">
+                                        <?php foreach ($pageData['offersFree'] as $item) {
+                                            echo '<option data-offer="' . $item['id'] . '">"' . $item['name'] . '" | Тема: "' . $item['topic'] . '" | Цена: ' .  $item['cost_per_click'] .'</option>';
+                                        } ?>
+                                        </select>                                    
+                                        <input id="subs_offer" type="submit" value="Подписаться" class="ban_btn float-right">
+                                    </div>                                    
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 text-center">
+                                        <div class="board_text"><h6>Список Подписок</h6></div>
+                                    </div>
+                                    <div class="row">
+                                        <select id="my_subs" class="form-control select-offer">
+                                        <?php foreach ($pageData['offersInwork'] as $item) {
+                                            echo '<option data-offer="' . $item['id'] . '">"' . $item['name'] . '" | Тема: "' . $item['topic'] . '" | Цена: ' .  $item['cost_per_click'] .'</option>';
+                                        } ?>
+                                        </select>
+                                        <input id="unsubs_offer" type="submit" value="Отписаться" class="ban_btn">                                                                            
+                                    </div>
+                                    <div class="row">
+                                        <input id="link_offer" type="submit" value="Ваша Ссылка" class="ban_btn link_btn">
+                                    </div>
+                                </div>
+                                <div class="col mb-4">
+                                    <div class="board_text">Клик по ссылке сохранит её в буфер</div>
+                                    <div class="board_text"><span id="link_tag"></span></div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <!-- Статистика разработчика -->
+            <div class="popup stats_web__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-6 col-xl-4 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Статистика разработчика</h5>                                    
+                                </div>
+                                <div class="error d-flex justify-content-center" id="stats_dev_info"></div>
+                                <div class="card-header justify-content-center">
+                                    <h6>Выбирете период</h6>
+                                </div>
+                                <div class="row calendar">
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_start" type="date">            
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_end" type="date">
+                                    </div>                
+                                </div>                                
+                                <div class="justify-content-start mb-4">
+                                    <div class="board_text">Количество переходов: <span class="digit" id="transitions_dev">X</span></div>
+                                    <div class="board_text">Доход составляет (в рублях): <span class="digit" id="income_dev">X</span></div>                                 
+                                </div>
+                                <button id="statsDev" type="button" class="btn float-right regist_btn">Получить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+
+            <?php } else if ($pageData['role'] == 'Рекламодатель') { ?>
+            <!-- Создание заказа -->
+            <div class="popup offers_add__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-9 col-xl-6 board">    
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Создание заказа</h5>
+				                </div>
+                                <div class="error d-flex justify-content-center" id="offers_add_info"></div>
+                                <div class="card-body">
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-ellipsis-h"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="Название заказа" id="name_offer" required>							
+                                    </div>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="Стоимость перехода (формат: 12345.12)" id="prise_offer" pattern="[0-9]+(\.[0-9]{1,2})?" required>
+                                    </div>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="Целевая ссылка" id="target_link" required>
+                                    </div>
+                                    <div class="input-group form-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-anchor"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="Тематика сайта" id="topic_offer">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Создать" class="btn float-right regist_btn" id="createOffer">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>
+                    </div>
+                </div>
+			</div>
+            <!-- Управление заказами -->
+            <div class="popup offers_adv__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-6 col-xl-4 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Управление заказами</h5>
+                                </div>
+                                <div class="error d-flex justify-content-center" id="offers_swap_info"></div>
+                                <div class="row mb-3">
+                                    <div class="col-12 text-center">
+                                        <div class="board_text"><h6>Ваши Активные заказы</h6></div>
+                                    </div>
+                                    <ul class="col connectedSortable" id="current-active">
+                                        <?php foreach ($pageData['activeOffers'] as $item) {
+                                            echo '<li class="js-offers row ui-state-default" data-offer=' . $item['id'] . '>';
+                                            echo '<span class="offer-name text-center">' . $item['name'] . ' | Цена ="' . $item['cost_per_click'] . '"</span>';
+                                            echo '<span class="offer-count-dev text-center">Подписано ' . $item['subscribers_count'] . '</span>';
+                                            echo '</li>';
+                                        } ?> 
+                                    </ul>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 text-center connectedSortable">
+                                        <div class="board_text"><h6>Ваши Неактивные заказы</h6></div>
+                                    </div>
+                                    <ul class="col connectedSortable" id="current-inactive">                           
+                                        <?php foreach ($pageData['inactiveOffers'] as $item) {
+                                            echo '<li class="js-offers row ui-state-default" data-offer=' . $item['id'] . '>';
+                                            echo '<span class="offer-name text-center">' . $item['name'] . ' | Цена ="' . $item['cost_per_click'] . '"</span>';
+                                            echo '<span class="offer-count-dev text-center">Подписано ' . $item['subscribers_count'] . '</span>';
+                                            echo '</li>';
+                                        } ?>  
+                                    </ul>                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Статистика рекламы -->
+            <div class="popup stats_adv__popup">
+                <div class="container-fluid h-100">
+                    <div class="row justify-content-center h-100">
+                        <div class="col-md-6 col-xl-4 board">
+                            <div class="card-body msg_card_body">
+                                <a class="close_popup"><span class="text">&#10006</span></a>
+                                <div class="card-header justify-content-center">
+                                    <h5>Статистика рекламы</h5>                                    
+                                </div>
+                                <div class="error d-flex justify-content-center" id="offers_adv_info"></div>
+                                <div class="card-header justify-content-center">
+                                    <h6>Выбирете период</h6>
+                                </div>
+                                <div class="row calendar">
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_start" type="date">            
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control py-2 border-right-0 border" id="date_end" type="date">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <select id="all_subs" class="form-control select-offer-all">
+                                        <?php foreach ($pageData['allOffers'] as $item) {
+                                            echo '<option data-offer="' . $item['id'] . '">"' . $item['name'] . '" | Цена: ' .  $item['cost_per_click'] . ' | Подписок ' . $item['subscribers_count'] . '</option>';
+                                        } ?>
+                                    </select>                                        
+                                </div> 
+                                <div class="justify-content-start mb-4">
+                                    <div class="board_text">Количество переходов: <span class="digit" id="transitions_adv">&#10006</span></div>
+                                    <div class="board_text">Расход составляет (в рублях): <span class="digit" id="expenses_adv">&#10006</span></div>                                 
+                                </div>
+                                <button id="statsOffer" type="button" class="btn float-right regist_btn">Получить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>            
+        </div>
+    </main>
+</body>

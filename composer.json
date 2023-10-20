@@ -1,0 +1,17 @@
+{
+    "name": "vladimir/gallary",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Vladimir"
+        }
+    ],
+    "require": {
+        "php": "^8.1"        
+    }
+}
